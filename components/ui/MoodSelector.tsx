@@ -1,10 +1,21 @@
 import { useState } from "react";
 
 const moods = [
-  { name: "Feliz", emoji: "🎉", category: "happy" },
-  { name: "Triste", emoji: "😢", category: "sad" },
-  { name: "Motivado", emoji: "💪", category: "motivated" },
-  { name: "Relajado", emoji: "🧘", category: "relaxed" },
+  { name: "Happyhapppy", emoji: "😊", category: "Feliz 😀" },
+  { name: "Sad", emoji: "☹️", category: "Triste 😭" },
+  { name: "Motivado", emoji: "💪🏻", category: "Energizado 🔋" },
+  { name: "Relax", emoji: "💆🏻", category: "Relajado🧘🏻" },
+  { name: "Broken Heart", emoji: "💔", category: "Triste 😭" },
+  { name: "Gym", emoji: "💪🏻", category: "Energizado 🔋" },
+  { name: "Fiesta Techno", emoji: "🕺🏻", category: "Energizado 🔋" },
+  { name: "Perreo", emoji: "🧘", category: "Latin 💃🏻" },
+  { name: "Enamorado", emoji: "💌", category: "Amor 💕" },
+  { name: "Boyband", emoji: "🎸", category: "Fan 🥁" },
+  { name: "Girl Music", emoji: "💅🏻", category: "Fan 🥁" },
+  { name: "Risa", emoji: "🤣", category: "Podcast🎤" },
+  { name: "Noviazgo", emoji: "👫🏻", category: "Cartitas al amor <3" },
+  { name: "Hot", emoji: "🥵", category: "Pasión 🌡️" },
+  { name: "Sad", emoji: "☹️", category: "Triste 😭" },
 ];
 
 export default function MoodSelector({ onSelect }: { onSelect: (mood: string) => void }) {
