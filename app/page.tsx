@@ -20,20 +20,26 @@ console.log("User AccessToken:", session?.user?.accessToken);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [playlists, setPlaylists] = useState<any[]>([]);
 
+  
   useEffect(() => {
+    console.log("Session data:", session);
+    console.log("User AccessToken:", session?.user?.accessToken);
+  
     if (selectedMood && session?.user?.accessToken) {
       const fetchPlaylists = async () => {
         try {
-          console.log("Fetching playlists with token:", session.user.accessToken); // 👀 Verifica si el token está aquí
           const playlists = await getPlaylistsByMood(selectedMood, session.user.accessToken);
           setPlaylists(playlists);
         } catch (error) {
           console.error("Error fetching playlists:", error);
         }
       };
+  
       fetchPlaylists();
     }
   }, [selectedMood, session]);
+  
+  
   
   
 
@@ -48,13 +54,13 @@ console.log("User AccessToken:", session?.user?.accessToken);
           </div>
           <h1 className="text-4xl font-bold tracking-tight">Moodify</h1>
           <p className="text-muted-foreground">
-            Generate personalized Spotify playlists based on your mood
+          Generador de Playlists por Estado de Ánimo
           </p>
         </div>
 
         {session ? (
           <>
-            <p>Welcome, {session.user?.name}!</p>
+            <p>Bienvenido, {session.user?.name}!</p>
             <MoodSelector onSelect={setSelectedMood} />
 
             {selectedMood && (
@@ -82,17 +88,18 @@ console.log("User AccessToken:", session?.user?.accessToken);
             )}
 
             <Button size="lg" className="w-full" onClick={() => signOut()}>
-              Logout
+              Cerrar sesión
             </Button>
+          
           </>
         ) : (
           <Button size="lg" className="w-full" onClick={() => signIn("spotify")}>
-            Sign in with Spotify
+            Inicia sesión con Spotify
           </Button>
         )}
 
         <p className="text-sm text-muted-foreground">
-          Connect your Spotify account to get started
+          Inicia sesión con tu cuenta de Spotify para comenzar
         </p>
       </div>
     </main>
