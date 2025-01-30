@@ -6,41 +6,34 @@ export default NextAuth({
     SpotifyProvider({
       clientId: process.env.SPOTIFY_CLIENT_ID!,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
-      authorization: "https://accounts.spotify.com/authorize?scope=user-read-email,playlist-read-private",
+      authorization:
+        "https://accounts.spotify.com/authorize?scope=user-read-email,playlist-read-private",
     }),
   ],
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
-        token.accessToken = account.access_token; // ✅ Almacenar el access_token en token
-        token.refreshToken = account.refresh_token; // ✅ Guardamos el refresh_token
-        token.accessTokenExpires = account.expires_at * 1000; // Guardamos tiempo de expiración
+        token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        token.accessTokenExpires = account.expires_at * 1000;
       }
-
-      // Si el token aún no ha expirado, lo retornamos
-      if (Date.now() < token.accessTokenExpires) {
-        console.log("Using existing access token:", token.accessToken);
-        return token;
-      }
-
-      // Si el token ha expirado, refrescamos el token de acceso
-      return await refreshAccessToken(token);
-    },
-
-    async session({ session, token }) {
-      session.user.accessToken = token.accessToken; // ✅ Asegurar que se pasa a la sesión
+      return token;
+    }, // 👈 Asegúrate de que haya una coma aquí
+  
+    async session({ session, token }) { 
+      console.log("Session Token Data:", token); // 👈 Depuración
+      session.user.accessToken = token.accessToken;
       session.user.refreshToken = token.refreshToken;
-      console.log("Session Token Data:", session);
       return session;
-    },
-  },
+    }
+  }
 });
 
-// Función para refrescar el token si ha expirado
+
+// 🔄 **Función para refrescar el accessToken**
 async function refreshAccessToken(token) {
   try {
-    const url = "https://accounts.spotify.com/api/token";
-    const response = await fetch(url, {
+    const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -50,21 +43,24 @@ async function refreshAccessToken(token) {
       },
       body: new URLSearchParams({
         grant_type: "refresh_token",
-        refresh_token: token.refreshToken,
+        refresh_token: token.refreshToken || "",
+  // <-- Asegúrate de que se usa el refresh token
       }),
     });
 
     const refreshedTokens = await response.json();
-    console.log("Refreshed Token Data:", refreshedTokens);
+    if (!response.ok) {
+      throw refreshedTokens;
+    }
 
     return {
       ...token,
       accessToken: refreshedTokens.access_token,
-      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000, // Nueva expiración
-      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
+      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000, 
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, 
     };
   } catch (error) {
-    console.error("Error refreshing access token:", error);
+    console.error("Error refreshing access token", error);
     return { ...token, error: "RefreshAccessTokenError" };
   }
 }

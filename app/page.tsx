@@ -22,8 +22,9 @@ console.log("User AccessToken:", session?.user?.accessToken);
 
   
   useEffect(() => {
-    console.log("Session data:", session);
-    console.log("User AccessToken:", session?.user?.accessToken);
+    console.log("🟢 Session data:", session);
+    console.log("🟢 User AccessToken:", session?.user?.accessToken);
+    console.log("🟢 User RefreshToken:", session?.user?.refreshToken);
   
     if (selectedMood && session?.user?.accessToken) {
       const fetchPlaylists = async () => {
@@ -31,7 +32,7 @@ console.log("User AccessToken:", session?.user?.accessToken);
           const playlists = await getPlaylistsByMood(selectedMood, session.user.accessToken);
           setPlaylists(playlists);
         } catch (error) {
-          console.error("Error fetching playlists:", error);
+          console.error("⚠️ Error fetching playlists:", error);
         }
       };
   
@@ -39,9 +40,7 @@ console.log("User AccessToken:", session?.user?.accessToken);
     }
   }, [selectedMood, session]);
   
-  
-  
-  
+
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gradient">
@@ -87,9 +86,10 @@ console.log("User AccessToken:", session?.user?.accessToken);
               </div>
             )}
 
-            <Button size="lg" className="w-full" onClick={() => signOut()}>
-              Cerrar sesión
-            </Button>
+        <Button size="lg" className="w-full" onClick={() => signOut({ redirect: true, callbackUrl: "/" })}>
+          Cerrar sesión
+        </Button>
+
           
           </>
         ) : (
