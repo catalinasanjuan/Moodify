@@ -22,23 +22,21 @@ console.log("User AccessToken:", session?.user?.accessToken);
 
   
   useEffect(() => {
-    console.log("🟢 Session data:", session);
-    console.log("🟢 User AccessToken:", session?.user?.accessToken);
-    console.log("🟢 User RefreshToken:", session?.user?.refreshToken);
-  
     if (selectedMood && session?.user?.accessToken) {
       const fetchPlaylists = async () => {
         try {
           const playlists = await getPlaylistsByMood(selectedMood, session.user.accessToken);
+          console.log("Fetched playlists:", playlists); // 🔍 Verificar en consola
           setPlaylists(playlists);
         } catch (error) {
-          console.error("⚠️ Error fetching playlists:", error);
+          console.error("Error fetching playlists:", error);
         }
       };
   
       fetchPlaylists();
     }
   }, [selectedMood, session]);
+  
   
 
 
@@ -66,12 +64,13 @@ console.log("User AccessToken:", session?.user?.accessToken);
               <p className="mt-6">Seleccionaste: {selectedMood}</p>
             )}
 
-            {playlists.length > 0 && (
-              <div className="mt-6">
-                <h2 className="text-xl font-semibold">Playlists recomendadas</h2>
-                <ul className="mt-4 space-y-2">
-                  {playlists.map((playlist) => (
-                    <li key={playlist.id}>
+          {playlists.length > 0 && (
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold">Playlists recomendadas</h2>
+              <ul className="mt-4 space-y-2">
+                {playlists.map((playlist) => (
+                  <li key={playlist?.id || Math.random()}>
+                    {playlist && playlist.external_urls?.spotify ? (
                       <a
                         href={playlist.external_urls.spotify}
                         target="_blank"
@@ -80,11 +79,16 @@ console.log("User AccessToken:", session?.user?.accessToken);
                       >
                         {playlist.name}
                       </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+                    ) : (
+                      <span className="text-gray-500">{playlist?.name || "Desconocida"} (No disponible)</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+
 
         <Button size="lg" className="w-full" onClick={() => signOut({ redirect: true, callbackUrl: "/" })}>
           Cerrar sesión
