@@ -1,4 +1,5 @@
 export async function getPlaylistsByMood(mood: string, token: string) {
+  // 1️⃣ Mapeo de estados de ánimo a palabras clave de búsqueda
   const moodMap: Record<string, string> = {
     happy: "happy",
     sad: "sad",
@@ -19,8 +20,12 @@ export async function getPlaylistsByMood(mood: string, token: string) {
     cleanhouse: "house",
   };
 
-  const query = moodMap[mood] || "chill";
+  // 2️⃣ Obtener la palabra clave asociada
+  const query = moodMap[mood] || "chill"; 
+  console.log("Selected mood:", mood);  // Verifica qué estado de ánimo se está enviando
+  console.log("Query sent to Spotify API:", query); // Verifica qué palabra clave se usa en la consulta
 
+  // 3️⃣ Hacer la consulta a la API de Spotify
   const res = await fetch(
     `https://api.spotify.com/v1/search?q=${query}&type=playlist&limit=10`,
     {
@@ -30,19 +35,21 @@ export async function getPlaylistsByMood(mood: string, token: string) {
     }
   );
 
+  // 4️⃣ Verificar si la respuesta es válida
   if (!res.ok) {
-    throw new Error("Error fetching playlists from Spotify");
+    console.error("Error al obtener playlists:", res.statusText);
+    return [];
   }
 
+  // 5️⃣ Convertir la respuesta a JSON
   const data = await res.json();
-  console.log("📌 API Response:", JSON.stringify(data, null, 2)); // ✅ Verifica la respuesta de la API
-  
-  // Validar que `playlists.items` exista antes de retornarlo
+  console.log("API Response:", data);  // 🔍 Verifica qué devuelve Spotify
+
+  // 6️⃣ Validar que existen playlists en la respuesta
   if (!data.playlists || !data.playlists.items) {
-      console.error("⚠️ No playlists found in API response.");
-      return [];
+    console.error("⚠️ No playlists found for this mood:", mood);
+    return [];
   }
-  
-  return data.playlists.items;
-  
+
+  return data.playlists.items; // Devuelve las playlists obtenidas
 }

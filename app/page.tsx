@@ -25,6 +25,7 @@ console.log("User AccessToken:", session?.user?.accessToken);
     if (selectedMood && session?.user?.accessToken) {
       const fetchPlaylists = async () => {
         try {
+          console.log("Fetching playlists for mood:", selectedMood);
           const playlists = await getPlaylistsByMood(selectedMood, session.user.accessToken);
           console.log("Fetched playlists:", playlists); // 🔍 Verificar en consola
           setPlaylists(playlists);
@@ -36,7 +37,6 @@ console.log("User AccessToken:", session?.user?.accessToken);
       fetchPlaylists();
     }
   }, [selectedMood, session]);
-  
   
 
 
