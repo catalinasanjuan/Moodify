@@ -64,30 +64,28 @@ console.log("User AccessToken:", session?.user?.accessToken);
               <p className="mt-6">Seleccionaste: {selectedMood}</p>
             )}
 
-          {playlists.length > 0 && (
-            <div className="mt-6">
-              <h2 className="text-xl font-semibold">Playlists recomendadas</h2>
-              <ul className="mt-4 space-y-2">
-                {playlists.map((playlist) => (
-                  <li key={playlist?.id || Math.random()}>
-                    {playlist && playlist.external_urls?.spotify ? (
-                      <a
-                        href={playlist.external_urls.spotify}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
-                      >
-                        {playlist.name}
-                      </a>
-                    ) : (
-                      <span className="text-gray-500">{playlist?.name || "Desconocida"} (No disponible)</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <ul className="mt-4 space-y-2">
+            {playlists.map((playlist) => (
+          
+              playlist ? (
+                <li key={playlist.id || Math.random()}>
+                  {playlist.external_urls?.spotify ? (
+                    <a
+                      href={playlist.external_urls.spotify}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      {playlist.name}
+                    </a>
+                  ) : (
+                    <span className="text-gray-500">{playlist?.name ?? "Desconocida"} (No disponible)</span>
+                  )}
+                </li>
+              ) : null
+            ))}
 
+          </ul>
 
 
         <Button size="lg" className="w-full" onClick={() => signOut({ redirect: true, callbackUrl: "/" })}>

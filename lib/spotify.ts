@@ -35,15 +35,14 @@ export async function getPlaylistsByMood(mood: string, token: string) {
   }
 
   const data = await res.json();
-
-  // 🔍 Depuración: Verificar qué devuelve la API antes de acceder a `data.playlists.items`
-  console.log("API Response:", data);
-
-  // ✅ Validación para evitar errores cuando `data.playlists.items` no existe
+  console.log("📌 API Response:", JSON.stringify(data, null, 2)); // ✅ Verifica la respuesta de la API
+  
+  // Validar que `playlists.items` exista antes de retornarlo
   if (!data.playlists || !data.playlists.items) {
-    console.error("⚠️ No playlists found in API response.");
-    return [];
+      console.error("⚠️ No playlists found in API response.");
+      return [];
   }
-
+  
   return data.playlists.items;
+  
 }
